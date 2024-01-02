@@ -22,7 +22,7 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 		Find.Popup.Storage.retrieveSavedExpressions((data) => {
 			if(data && data.length) {
 				for(let index = 0; index < data.length; index++) {
-					let entryEl = buildExpressionEntryElement(data[index]);
+					let entryEl = buildExpressionEntryElement(data[index], 'testing 1');
 					parentEl.appendChild(entryEl);
 				}
 			} else {
@@ -72,6 +72,8 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 			return;
 		}
 
+		let title = prompt("Enter a title to save it under.");
+
 		Find.Popup.Storage.retrieveSavedExpressions((data) => {
 			if(data) {
 				//Remove existing entry, if it exists
@@ -96,7 +98,7 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 				}
 			}
 
-			let entryEl = buildExpressionEntryElement(regex);
+			let entryEl = buildExpressionEntryElement(regex, 'test ' + title);
 			parentEl.insertBefore(entryEl, parentEl.firstChild);
 
 			//Remove null entry, if it exists
@@ -133,8 +135,9 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 	 *
 	 * @private
 	 * @param {string} regex - The regular expression to display in the entry body.
+	 * @param {string} title - The title to display in the entry body.
 	 * */
-	function buildExpressionEntryElement(regex) {
+	function buildExpressionEntryElement(regex, title) {
 		// Set search field with regex and update search. Also invoke saveEntry(), which
 		// will place regex at top of saved expression entries and update local storage.
 		let useEntryHandler = (e) => {
@@ -176,6 +179,11 @@ Find.register('Popup.SavedExpressionsPane', function (self) {
 			.createElement('div')
 			.addClass('saved-expression-entry')
 			.setAttribute('data-regex', regex)
+			.appendChild(ElementBuilder.create(document)
+				.createElement('span')
+				.addClass('saved-expression-title-text', 'def-font')
+				.setInnerText(title)
+				.build())
 			.appendChild(ElementBuilder.create(document)
 				.createElement('button')
 				.addClass('saved-expression-entry-button', 'controls-button')
